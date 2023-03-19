@@ -10,6 +10,7 @@ readonly class ImportCurrenciesService
 
     public function __construct(
       private HttpClientInterface $client,
+      private SaveOrUpdateCurrenciesService $service
     ) {
     }
 
@@ -28,6 +29,7 @@ readonly class ImportCurrenciesService
               'https://api.nbp.pl/api/exchangerates/tables/B?format=json'
             );
             $currencies = json_decode($response->getContent())[0]->rates;
+            $this->service->saveOrUpdateCurrencies($currencies);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
