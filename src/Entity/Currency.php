@@ -4,30 +4,33 @@ namespace App\Entity;
 
 use App\Repository\CurrencyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CurrencyRepository::class)]
 class Currency
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private Uuid $id;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private string $name;
 
     #[ORM\Column(length: 255)]
-    private ?string $currency_code = null;
+    private string $currencyCode;
 
     #[ORM\Column]
-    private ?int $exchange_rate = null;
+    private float $exchangeRate;
 
-    public function getId(): ?int
+    public function getId(): Uuid
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -39,26 +42,26 @@ class Currency
         return $this;
     }
 
-    public function getCurrencyCode(): ?string
+    public function getCurrencyCode(): string
     {
-        return $this->currency_code;
+        return $this->currencyCode;
     }
 
-    public function setCurrencyCode(string $currency_code): self
+    public function setCurrencyCode(string $currencyCode): self
     {
-        $this->currency_code = $currency_code;
+        $this->currencyCode = $currencyCode;
 
         return $this;
     }
 
-    public function getExchangeRate(): ?int
+    public function getExchangeRate(): float
     {
-        return $this->exchange_rate;
+        return $this->exchangeRate;
     }
 
-    public function setExchangeRate(int $exchange_rate): self
+    public function setExchangeRate(float $exchangeRate): self
     {
-        $this->exchange_rate = $exchange_rate;
+        $this->exchangeRate = $exchangeRate;
 
         return $this;
     }
