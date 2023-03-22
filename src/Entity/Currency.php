@@ -10,6 +10,7 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity(repositoryClass: CurrencyRepository::class)]
 class Currency
 {
+
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -25,6 +26,21 @@ class Currency
     #[ORM\Column]
     private float $exchangeRate;
 
+    public function __construct(
+      string $name,
+      string $currencyCode,
+      float $exchangeRate
+    ) {
+        $this->name         = $name;
+        $this->currencyCode = $currencyCode;
+        $this->exchangeRate = $exchangeRate;
+    }
+
+    public function update($exchangeRate)
+    {
+        $this->exchangeRate = $exchangeRate;
+    }
+
     public function getId(): Uuid
     {
         return $this->id;
@@ -35,23 +51,9 @@ class Currency
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function getCurrencyCode(): string
     {
         return $this->currencyCode;
-    }
-
-    public function setCurrencyCode(string $currencyCode): self
-    {
-        $this->currencyCode = $currencyCode;
-
-        return $this;
     }
 
     public function getExchangeRate(): float
@@ -59,10 +61,4 @@ class Currency
         return $this->exchangeRate;
     }
 
-    public function setExchangeRate(float $exchangeRate): self
-    {
-        $this->exchangeRate = $exchangeRate;
-
-        return $this;
-    }
 }

@@ -3,8 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Money.iml" filepath="$PROJECT_DIR$/.idea/Money.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../innovationsoftware-zadanie-php-master/.idea/innovationsoftware-zadanie-php-master.iml" filepath="$PROJECT_DIR$/../innovationsoftware-zadanie-php-master/.idea/innovationsoftware-zadanie-php-master.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../Inne/ponadnorme-docker/.idea/ponadnorme-docker.iml" filepath="$PROJECT_DIR$/../Inne/ponadnorme-docker/.idea/ponadnorme-docker.iml" />
     </modules>
   </component>
 </project>

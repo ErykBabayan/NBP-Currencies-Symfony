@@ -62,7 +62,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="innovationsoftware-zadanie-php-master" />
-    <orderEntry type="module" module-name="ponadnorme-docker" />
   </component>
 </module>

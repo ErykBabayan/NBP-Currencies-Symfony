@@ -21,17 +21,15 @@ readonly class SaveOrUpdateCurrenciesService
             );
 
             if (!$currency) {
-                $currency = new Currency();
-
-                $currency->setName($externalCurrency->currency);
-                $currency->setCurrencyCode($externalCurrency->code);
-                $currency->setExchangeRate($externalCurrency->mid);
-
-                $this->repository->save($currency, true);
+                $currency = new Currency(
+                  $externalCurrency->currency,
+                  $externalCurrency->code,
+                  $externalCurrency->mid
+                );
             } else {
-                $currency->setExchangeRate($externalCurrency->mid);
-                $this->repository->save($currency, true);
+                $currency->update($externalCurrency->mid);
             }
+            $this->repository->save($currency, true);
         }
     }
 }
