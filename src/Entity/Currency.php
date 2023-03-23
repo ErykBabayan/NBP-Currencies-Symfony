@@ -36,7 +36,7 @@ class Currency
         $this->exchangeRate = $exchangeRate;
     }
 
-    public function update($exchangeRate)
+    public function update($exchangeRate): void
     {
         $this->exchangeRate = $exchangeRate;
     }
