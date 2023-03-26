@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\DTO\CreateCurrencyData;
+use App\DTO\UpdateCurrencyData;
 use App\Repository\CurrencyRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -27,18 +29,16 @@ class Currency
     private float $exchangeRate;
 
     public function __construct(
-      string $name,
-      string $currencyCode,
-      float $exchangeRate
+      CreateCurrencyData $data
     ) {
-        $this->name         = $name;
-        $this->currencyCode = $currencyCode;
-        $this->exchangeRate = $exchangeRate;
+        $this->name         = $data->name;
+        $this->currencyCode = $data->currencyCode;
+        $this->exchangeRate = $data->exchangeRate;
     }
 
-    public function update($exchangeRate): void
+    public function update(UpdateCurrencyData $data): void
     {
-        $this->exchangeRate = $exchangeRate;
+        $this->exchangeRate = $data->exchangeRate;
     }
 
     public function getId(): Uuid
