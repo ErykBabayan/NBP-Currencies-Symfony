@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\DTO\CreateCurrencyData;
+use App\DTO\CurrencyResource;
+use App\DTO\UpdateCurrencyData;
 use App\Entity\Currency;
 use App\Repository\CurrencyRepository;
+use App\Service\CurrencyService;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -15,58 +18,68 @@ class CurrencyController extends AbstractController
 {
 
     public function __construct(
-      private readonly CurrencyRepository $repository
+      private readonly CurrencyRepository $repository,
+      private readonly CurrencyService $service
     ) {
+    }
+
+    /**
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     */
+    #[Rest\Get(
+      path: "/currencies",
+    )]
+    public function index(): Response
+    {
+        $currencies = $this->repository->findAll();
+        $this->service->importCurrencies();
+
+        return $this->response(
+          data: CurrencyResource::fromObjects($currencies)
+        );
     }
 
     #[Rest\Get(
       path: "/currency/{id}",
     )]
-    public function index(
+    public function show(
       Currency $currency
     ): Response {
-        return $this->response($currency);
+        return $this->response(data: CurrencyResource::fromObject($currency));
     }
 
-    #[Rest\Get(
-      path: "/currencies",
-    )]
-    public function show(): Response
-    {
-        $currencies = $this->repository->findAll();
-        return $this->response($currencies);
-    }
-
+    /**
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     */
     #[Rest\Post(
       path: "/currency",
     )]
     public function create(
-      Request $request
+      CreateCurrencyData $data
     ): Response {
-        $requestData = json_decode($request->getContent());
-        $currency    = new Currency(
-          $requestData->name,
-          $requestData->currencyCode,
-          $requestData->exchangeRate
+        $this->service->importCurrencies();
+        $currency = $this->service->create($data);
+        return $this->response(
+          data: CurrencyResource::fromObject($currency),
+          statusCode: Response::HTTP_CREATED
         );
-
-        $this->repository->save($currency, true);
-
-        return $this->response($currency);
     }
 
     #[Rest\Patch(
       path: "/currency/{id}",
     )]
     public function patch(
-      Request $request,
+      UpdateCurrencyData $data,
       Currency $currency
     ): Response {
-        $requestData = json_decode($request->getContent());
-
-        $currency->update($requestData->exchangeRate);
-        $this->repository->save($currency,true);
-        return $this->response($currency);
+        $this->service->update($currency, $data);
+        return $this->response(data: CurrencyResource::fromObject($currency));
     }
 
     #[Rest\Delete(
@@ -75,7 +88,8 @@ class CurrencyController extends AbstractController
     public function delete(
       Currency $currency
     ): Response {
-        $this->repository->remove($currency);
+        $this->repository->remove($currency, true);
         return $this->emptyResponse();
     }
+
 }
